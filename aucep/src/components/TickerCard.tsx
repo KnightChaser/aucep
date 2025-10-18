@@ -23,17 +23,9 @@ export const TickerCard = ({ item }: TickerCardProps) => {
             : "text-gray-600";
     const ariaLabel =
         item.change === "RISE"
-            ? `up ${formatChange(
-                  item.change,
-                  item.signed_change_price,
-                  item.signed_change_rate
-              )}`
+            ? `up ${formatChange(item.signed_change_rate)}`
             : item.change === "FALL"
-            ? `down ${formatChange(
-                  item.change,
-                  item.signed_change_price,
-                  item.signed_change_rate
-              )}`
+            ? `down ${formatChange(item.signed_change_rate)}`
             : "no change";
 
     return (
@@ -57,12 +49,7 @@ export const TickerCard = ({ item }: TickerCardProps) => {
                         aria-label={ariaLabel}
                         style={{ fontFeatureSettings: "'tnum'" }}
                     >
-                        {changeIcon}{" "}
-                        {formatChange(
-                            item.change,
-                            item.signed_change_price,
-                            item.signed_change_rate
-                        )}
+                        {changeIcon} {formatChange(item.signed_change_rate)}
                     </p>
                     <p
                         className="mt-1 text-sm text-gray-500 tabular-nums"
