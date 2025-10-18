@@ -14,8 +14,6 @@ export const formatPrice = (price: number, market: string) => {
             maximumFractionDigits = 6;
         }
         return new Intl.NumberFormat("ko-KR", {
-            style: "currency",
-            currency: "KRW",
             maximumFractionDigits,
         }).format(price);
     }
@@ -66,7 +64,7 @@ export const formatInteger = (value: number) => {
 
 export const formatChange = (rate: number) => {
     const pct = (rate * 100).toFixed(2);
-    return `${rate >= 0 ? "+" : ""}${pct}%`;
+    return pct;
 };
 
 export const formatDelta = (delta: number, market: string) => {
@@ -85,8 +83,6 @@ export const formatDelta = (delta: number, market: string) => {
             maximumFractionDigits = 6;
         }
         return new Intl.NumberFormat("ko-KR", {
-            style: "currency",
-            currency: "KRW",
             maximumFractionDigits,
         }).format(delta);
     }

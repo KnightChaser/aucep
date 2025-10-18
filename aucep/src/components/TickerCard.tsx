@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import FlipNumbers from "react-flip-numbers";
 import type { TickerData } from "@/hooks/useTickerData";
 import {
     formatPrice,
@@ -23,9 +24,9 @@ export const TickerCard = ({ item }: TickerCardProps) => {
             : "text-gray-600";
     const ariaLabel =
         item.change === "RISE"
-            ? `up ${formatChange(item.signed_change_rate)}`
+            ? `up +${formatChange(item.signed_change_rate)}%`
             : item.change === "FALL"
-            ? `down ${formatChange(item.signed_change_rate)}`
+            ? `down ${formatChange(item.signed_change_rate)}%`
             : "no change";
 
     return (
@@ -39,23 +40,88 @@ export const TickerCard = ({ item }: TickerCardProps) => {
             <div className="flex-1 flex items-center px-4">
                 <div className="w-full text-center">
                     <p
-                        className="text-2xl font-extrabold text-gray-900 tabular-nums whitespace-nowrap"
+                        className="text-2xl font-extrabold text-gray-900 tabular-nums flex items-center justify-center"
                         style={{ fontFeatureSettings: "'tnum'" }}
                     >
-                        {formatPrice(item.trade_price, item.market)}
+                        <span className="inline-flex items-center gap-0.5 whitespace-nowrap">
+                            <span aria-hidden className="leading-none">
+                                ₩
+                            </span>
+                            <span
+                                className="inline-flex items-center"
+                                style={{ transform: "translateY(1px)" }}
+                            >
+                                <FlipNumbers
+                                    height={24}
+                                    width={14}
+                                    color="currentColor"
+                                    background="transparent"
+                                    play
+                                    duration={0.7}
+                                    numbers={formatPrice(
+                                        item.trade_price,
+                                        item.market
+                                    )}
+                                />
+                            </span>
+                        </span>
                     </p>
                     <p
-                        className={`mt-2 text-lg font-medium ${changeColor} tabular-nums`}
+                        className={`mt-2 text-lg font-medium ${changeColor} tabular-nums flex items-center justify-center`}
                         aria-label={ariaLabel}
                         style={{ fontFeatureSettings: "'tnum'" }}
                     >
-                        {changeIcon} {formatChange(item.signed_change_rate)}
+                        <span className="inline-flex items-center gap-1 whitespace-nowrap">
+                            <span aria-hidden className="leading-none">
+                                {changeIcon}
+                            </span>
+                            <span
+                                className="inline-flex items-center"
+                                style={{ transform: "translateY(0.5px)" }}
+                            >
+                                <FlipNumbers
+                                    height={18}
+                                    width={10}
+                                    color="currentColor"
+                                    background="transparent"
+                                    play
+                                    duration={0.7}
+                                    numbers={formatChange(
+                                        item.signed_change_rate
+                                    )}
+                                />
+                            </span>
+                            <span aria-hidden className="leading-none">
+                                %
+                            </span>
+                        </span>
                     </p>
                     <p
-                        className="mt-1 text-sm text-gray-500 tabular-nums"
+                        className="mt-1 text-sm text-gray-500 tabular-nums flex items-center justify-center"
                         style={{ fontFeatureSettings: "'tnum'" }}
                     >
-                        {formatDelta(item.signed_change_price, item.market)}
+                        <span className="inline-flex items-center gap-0.5 whitespace-nowrap">
+                            <span aria-hidden className="leading-none">
+                                ₩
+                            </span>
+                            <span
+                                className="inline-flex items-center"
+                                style={{ transform: "translateY(0.5px)" }}
+                            >
+                                <FlipNumbers
+                                    height={14}
+                                    width={7}
+                                    color="currentColor"
+                                    background="transparent"
+                                    play
+                                    duration={0.7}
+                                    numbers={formatDelta(
+                                        item.signed_change_price,
+                                        item.market
+                                    )}
+                                />
+                            </span>
+                        </span>
                     </p>
                 </div>
             </div>
@@ -68,7 +134,19 @@ export const TickerCard = ({ item }: TickerCardProps) => {
                     >
                         <div className="text-left text-sm">24h Vol</div>
                         <div className="text-right tabular-nums text-base font-medium break-words">
-                            {formatQuantity(item.acc_trade_volume_24h)}
+                            <span className="inline-flex whitespace-nowrap">
+                                <FlipNumbers
+                                    height={16}
+                                    width={10}
+                                    color="currentColor"
+                                    background="transparent"
+                                    play
+                                    duration={0.7}
+                                    numbers={formatQuantity(
+                                        item.acc_trade_volume_24h
+                                    )}
+                                />
+                            </span>
                         </div>
                     </div>
                     <div
@@ -77,9 +155,19 @@ export const TickerCard = ({ item }: TickerCardProps) => {
                     >
                         <div className="text-left text-sm">24h Price</div>
                         <div className="text-right tabular-nums text-base font-medium break-words">
-                            {formatInteger(
-                                Math.round(item.acc_trade_price_24h)
-                            )}
+                            <span className="inline-flex whitespace-nowrap">
+                                <FlipNumbers
+                                    height={16}
+                                    width={10}
+                                    color="currentColor"
+                                    background="transparent"
+                                    play
+                                    duration={0.7}
+                                    numbers={formatInteger(
+                                        Math.round(item.acc_trade_price_24h)
+                                    )}
+                                />
+                            </span>
                         </div>
                     </div>
                 </div>
