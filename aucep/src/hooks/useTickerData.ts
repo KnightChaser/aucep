@@ -23,6 +23,7 @@ export interface TickerData {
 export const useTickerData = () => {
     const [data, setData] = useState<TickerData[]>([]);
     const [loading, setLoading] = useState(true);
+    const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
     useEffect(() => {
         const markets = [
@@ -64,6 +65,7 @@ export const useTickerData = () => {
                 const json: TickerData[] = await response.json();
                 setData(json);
                 setLoading(false);
+                setLastUpdate(new Date());
             } catch (error) {
                 console.error("Error fetching data:", error);
                 setLoading(false);
@@ -76,5 +78,5 @@ export const useTickerData = () => {
         return () => clearInterval(interval);
     }, []);
 
-    return { data, loading };
+    return { data, loading, lastUpdate };
 };
