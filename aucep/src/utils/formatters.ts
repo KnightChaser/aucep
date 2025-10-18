@@ -16,7 +16,21 @@ export const formatPrice = (price: number, market: string) => {
 };
 
 export const formatQuantity = (quantity: number, decimals: number = 2) => {
-    return quantity.toFixed(decimals);
+    // For small coin quantities, show limited decimals. For large volumes, show integer where appropriate.
+    if (Math.abs(quantity) >= 1000) {
+        return new Intl.NumberFormat("ko-KR", {
+            maximumFractionDigits: 0,
+        }).format(quantity);
+    }
+    return new Intl.NumberFormat("ko-KR", {
+        maximumFractionDigits: decimals,
+    }).format(quantity);
+};
+
+export const formatInteger = (value: number) => {
+    return new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 0 }).format(
+        value
+    );
 };
 
 export const formatChange = (change: string, price: number, rate: number) => {

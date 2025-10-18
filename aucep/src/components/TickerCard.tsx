@@ -5,6 +5,7 @@ import {
     formatChange,
     formatQuantity,
     formatDelta,
+    formatInteger,
 } from "@/utils/formatters";
 
 interface TickerCardProps {
@@ -36,7 +37,7 @@ export const TickerCard = ({ item }: TickerCardProps) => {
             : "no change";
 
     return (
-        <Card className="h-64 flex flex-col bg-white shadow-lg hover:shadow-xl transition-shadow rounded-lg overflow-hidden">
+        <Card className="h-80 flex flex-col bg-white shadow-lg hover:shadow-xl transition-shadow rounded-lg overflow-hidden">
             <CardHeader className="pt-4 px-4">
                 <CardTitle className="text-lg font-semibold text-center tracking-wide">
                     {item.market.replace("KRW-", "")}
@@ -72,17 +73,27 @@ export const TickerCard = ({ item }: TickerCardProps) => {
                 </div>
             </div>
 
-            <CardContent className="py-3 px-4 bg-gray-50">
-                <div
-                    className="flex justify-between text-sm text-gray-600 tabular-nums"
-                    style={{ fontFeatureSettings: "'tnum'" }}
-                >
-                    <div className="truncate">
-                        Vol {formatQuantity(item.acc_trade_volume_24h)}
+            <CardContent className="py-4 px-4 bg-gray-50">
+                <div className="text-sm text-gray-600 space-y-2">
+                    <div
+                        className="flex justify-between items-start"
+                        style={{ fontFeatureSettings: "'tnum'" }}
+                    >
+                        <div className="text-left text-sm">24h Vol</div>
+                        <div className="text-right tabular-nums text-base font-medium break-words">
+                            {formatQuantity(item.acc_trade_volume_24h)}
+                        </div>
                     </div>
-                    <div className="truncate">
-                        Turnover{" "}
-                        {formatPrice(item.acc_trade_price_24h, item.market)}
+                    <div
+                        className="flex justify-between items-start"
+                        style={{ fontFeatureSettings: "'tnum'" }}
+                    >
+                        <div className="text-left text-sm">24h Price</div>
+                        <div className="text-right tabular-nums text-base font-medium break-words">
+                            {formatInteger(
+                                Math.round(item.acc_trade_price_24h)
+                            )}
+                        </div>
                     </div>
                 </div>
             </CardContent>

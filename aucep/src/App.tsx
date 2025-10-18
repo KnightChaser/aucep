@@ -1,6 +1,5 @@
 import { useTickerData } from "@/hooks/useTickerData";
 import { TickerCard } from "@/components/TickerCard";
-import { Skeleton } from "@/components/ui/skeleton";
 
 function App() {
     const { data, loading, lastUpdate } = useTickerData();
@@ -11,7 +10,7 @@ function App() {
 
     return (
         <div className="min-h-screen py-8">
-            <div className="max-w-7xl mx-auto px-4">
+            <div className="max-w-screen-2xl mx-auto px-6">
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-4xl font-bold text-gray-800">
                         Cryptocurrency Ticker
@@ -23,7 +22,13 @@ function App() {
                     )}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 auto-rows-fr">
+                <div
+                    className="grid gap-8 auto-rows-fr"
+                    style={{
+                        gridTemplateColumns:
+                            "repeat(auto-fit, minmax(340px, 1fr))",
+                    }}
+                >
                     {loading
                         ? Array.from({ length: 28 }, (_, i) => (
                               <div
