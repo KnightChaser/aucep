@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface TickerData {
     market: string;
@@ -96,105 +97,46 @@ function App() {
     }
 
     return (
-        <div style={{ padding: "20px" }}>
-            <h1>Cryptocurrency Ticker</h1>
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                <thead>
-                    <tr>
-                        <th
-                            style={{ border: "1px solid #ddd", padding: "8px" }}
-                        >
-                            Market
-                        </th>
-                        <th
-                            style={{ border: "1px solid #ddd", padding: "8px" }}
-                        >
-                            Trade Price
-                        </th>
-                        <th
-                            style={{ border: "1px solid #ddd", padding: "8px" }}
-                        >
-                            Change
-                        </th>
-                        <th
-                            style={{ border: "1px solid #ddd", padding: "8px" }}
-                        >
-                            Trade Volume
-                        </th>
-                        <th
-                            style={{ border: "1px solid #ddd", padding: "8px" }}
-                        >
-                            24h Volume
-                        </th>
-                        <th
-                            style={{ border: "1px solid #ddd", padding: "8px" }}
-                        >
-                            24h Price
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data.map((item) => (
-                        <tr key={item.market}>
-                            <td
-                                style={{
-                                    border: "1px solid #ddd",
-                                    padding: "8px",
-                                }}
-                            >
-                                {item.market}
-                            </td>
-                            <td
-                                style={{
-                                    border: "1px solid #ddd",
-                                    padding: "8px",
-                                }}
-                            >
+        <div className="container mx-auto p-4">
+            <h1 className="text-3xl font-bold mb-6">Cryptocurrency Ticker</h1>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {data.map((item, index) => (
+                    <Card
+                        key={item.market}
+                        className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}
+                    >
+                        <CardHeader>
+                            <CardTitle>{item.market}</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p>
+                                Trade Price:{" "}
                                 {formatPrice(item.trade_price, item.market)}
-                            </td>
-                            <td
-                                style={{
-                                    border: "1px solid #ddd",
-                                    padding: "8px",
-                                }}
-                            >
+                            </p>
+                            <p>
+                                Change:{" "}
                                 {formatChange(
                                     item.change,
                                     item.signed_change_price,
                                     item.signed_change_rate
                                 )}
-                            </td>
-                            <td
-                                style={{
-                                    border: "1px solid #ddd",
-                                    padding: "8px",
-                                }}
-                            >
-                                {item.trade_volume.toFixed(8)}
-                            </td>
-                            <td
-                                style={{
-                                    border: "1px solid #ddd",
-                                    padding: "8px",
-                                }}
-                            >
+                            </p>
+                            <p>Trade Volume: {item.trade_volume.toFixed(8)}</p>
+                            <p>
+                                24h Volume:{" "}
                                 {item.acc_trade_volume_24h.toFixed(2)}
-                            </td>
-                            <td
-                                style={{
-                                    border: "1px solid #ddd",
-                                    padding: "8px",
-                                }}
-                            >
+                            </p>
+                            <p>
+                                24h Price:{" "}
                                 {formatPrice(
                                     item.acc_trade_price_24h,
                                     item.market
                                 )}
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+                            </p>
+                        </CardContent>
+                    </Card>
+                ))}
+            </div>
         </div>
     );
 }
