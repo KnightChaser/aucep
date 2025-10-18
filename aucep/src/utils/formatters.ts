@@ -1,9 +1,3 @@
-const krwFormatter = new Intl.NumberFormat("ko-KR", {
-    style: "currency",
-    currency: "KRW",
-    maximumFractionDigits: 0,
-});
-
 export const formatPrice = (price: number, market: string) => {
     if (market.startsWith("KRW")) {
         const abs = Math.abs(price);
@@ -77,7 +71,24 @@ export const formatChange = (rate: number) => {
 
 export const formatDelta = (delta: number, market: string) => {
     if (market.startsWith("KRW")) {
-        return krwFormatter.format(delta);
+        const abs = Math.abs(delta);
+        let maximumFractionDigits = 0;
+        if (abs >= 1000) {
+            maximumFractionDigits = 0;
+        } else if (abs >= 100) {
+            maximumFractionDigits = 1;
+        } else if (abs >= 10) {
+            maximumFractionDigits = 2;
+        } else if (abs >= 1) {
+            maximumFractionDigits = 3;
+        } else {
+            maximumFractionDigits = 6;
+        }
+        return new Intl.NumberFormat("ko-KR", {
+            style: "currency",
+            currency: "KRW",
+            maximumFractionDigits,
+        }).format(delta);
     }
     return delta.toString();
 };
