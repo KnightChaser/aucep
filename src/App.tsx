@@ -33,9 +33,16 @@ function App() {
                                   className="h-full bg-white shadow rounded-lg p-4"
                               />
                           ))
-                        : data.map((item) => (
-                              <TickerCard key={item.market} item={item} />
-                          ))}
+                        : data
+                              .slice()
+                              .sort(
+                                  (a, b) =>
+                                      b.acc_trade_price_24h -
+                                      a.acc_trade_price_24h
+                              )
+                              .map((item) => (
+                                  <TickerCard key={item.market} item={item} />
+                              ))}
                 </div>
             </div>
         </div>
