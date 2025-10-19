@@ -7,6 +7,7 @@ import {
     formatQuantity,
     formatDelta,
     formatInteger,
+    getChangeDisplay,
 } from "@/utils/formatters";
 
 interface TickerCardProps {
@@ -14,20 +15,10 @@ interface TickerCardProps {
 }
 
 export const TickerCard = ({ item }: TickerCardProps) => {
-    const changeIcon =
-        item.change === "RISE" ? "▲" : item.change === "FALL" ? "▼" : "";
-    const changeColor =
-        item.change === "RISE"
-            ? "text-green-600"
-            : item.change === "FALL"
-            ? "text-red-600"
-            : "text-gray-600";
-    const ariaLabel =
-        item.change === "RISE"
-            ? `up +${formatChange(item.signed_change_rate)}%`
-            : item.change === "FALL"
-            ? `down ${formatChange(item.signed_change_rate)}%`
-            : "no change";
+    const { changeIcon, changeColor, ariaLabel } = getChangeDisplay(
+        item.change,
+        item.signed_change_rate
+    );
 
     return (
         <Card className="h-80 flex flex-col bg-white shadow-lg hover:shadow-xl transition-shadow rounded-lg overflow-hidden">

@@ -88,3 +88,25 @@ export const formatDelta = (delta: number, market: string) => {
     }
     return delta.toString();
 };
+
+export const formatTime = (date: Date) => {
+    return date.toLocaleTimeString("en-US", { hour12: false });
+};
+
+export const getChangeDisplay = (change: string, signedChangeRate: number) => {
+    const changeIcon = change === "RISE" ? "▲" : change === "FALL" ? "▼" : "";
+    const changeColor =
+        change === "RISE"
+            ? "text-green-600"
+            : change === "FALL"
+            ? "text-red-600"
+            : "text-gray-600";
+    const ariaLabel =
+        change === "RISE"
+            ? `up +${formatChange(signedChangeRate)}%`
+            : change === "FALL"
+            ? `down ${formatChange(signedChangeRate)}%`
+            : "no change";
+
+    return { changeIcon, changeColor, ariaLabel };
+};

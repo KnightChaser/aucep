@@ -1,12 +1,9 @@
 import { useTickerData } from "@/hooks/useTickerData";
 import { TickerCard } from "@/components/TickerCard";
+import { formatTime } from "@/utils/formatters";
 
 function App() {
     const { data, loading, lastUpdate } = useTickerData();
-
-    const formatTime = (date: Date) => {
-        return date.toLocaleTimeString("en-US", { hour12: false });
-    };
 
     return (
         <div className="min-h-screen py-8">

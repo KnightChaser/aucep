@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { MARKETS } from "@/constants/markets";
 
 export interface TickerData {
     market: string;
@@ -26,45 +27,7 @@ export const useTickerData = () => {
     const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
     useEffect(() => {
-        const markets = [
-            "KRW-BTC",
-            "KRW-ETH",
-            "KRW-BCH",
-            "KRW-SOL",
-            "KRW-XRP",
-            "KRW-USDT",
-            "KRW-ENA",
-            "KRW-ETC",
-            "KRW-ADA",
-            "KRW-HBAR",
-            "KRW-AAVE",
-            "KRW-SOL",
-            "KRW-COMP",
-            "KRW-BSV",
-            "KRW-AVAX",
-            "KRW-LINK",
-            "KRW-DOT",
-            "KRW-SUI",
-            "KRW-QTUM",
-            "KRW-USDT",
-            "KRW-WAVES",
-            "KRW-ZBT",
-            "KRW-SAND",
-            "KRW-NEO",
-            "KRW-QTUM",
-            "KRW-SC",
-            "KRW-ZRX",
-            "KRW-DOGE",
-            "KRW-STRAX",
-            "KRW-TFUEL",
-            "KRW-FCT2",
-            "KRW-ZIL",
-            "KRW-IOST",
-            "KRW-XEC",
-            "KRW-SHIB",
-            "KRW-PEPE",
-            "KRW-BTT",
-        ];
+        const markets = MARKETS;
         const url = `https://api.upbit.com/v1/ticker?markets=${markets.join(
             ","
         )}`;
