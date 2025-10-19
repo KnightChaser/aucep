@@ -1,5 +1,5 @@
 # aucep
 > **A**esthetic **U**pbit **C**ryptocurrency **E**xchange **P**anel
 
-## Screenshot
-![aucep_screenshot_gif](https://github.com/user-attachments/assets/59249b6d-89f0-473d-b642-85062c23c39b)
+## Preview
+![aucep_screenshot_gif_2](https://github.com/user-attachments/assets/074b36ab-3368-4074-8749-7e1b7022089c)
