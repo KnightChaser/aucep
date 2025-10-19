@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import FlipNumbers from "react-flip-numbers";
 import type { ExtendedTickerData } from "@/hooks/useTickerData";
 import {
     formatPrice,
@@ -39,21 +38,11 @@ export const TickerCard = ({ item }: TickerCardProps) => {
                                 ₩
                             </span>
                             <span
-                                className="inline-flex items-center"
+                                className="inline-flex items-center animate-fade-in"
+                                key={formatPrice(item.trade_price, item.market)}
                                 style={{ transform: "translateY(1px)" }}
                             >
-                                <FlipNumbers
-                                    height={24}
-                                    width={14}
-                                    color="currentColor"
-                                    background="transparent"
-                                    play
-                                    duration={0.7}
-                                    numbers={formatPrice(
-                                        item.trade_price,
-                                        item.market
-                                    )}
-                                />
+                                {formatPrice(item.trade_price, item.market)}
                             </span>
                         </span>
                     </p>
@@ -67,20 +56,11 @@ export const TickerCard = ({ item }: TickerCardProps) => {
                                 {changeIcon}
                             </span>
                             <span
-                                className="inline-flex items-center"
+                                className="inline-flex items-center animate-fade-in"
+                                key={formatChange(item.signed_change_rate)}
                                 style={{ transform: "translateY(0.5px)" }}
                             >
-                                <FlipNumbers
-                                    height={18}
-                                    width={10}
-                                    color="currentColor"
-                                    background="transparent"
-                                    play
-                                    duration={0.7}
-                                    numbers={formatChange(
-                                        item.signed_change_rate
-                                    )}
-                                />
+                                {formatChange(item.signed_change_rate)}
                             </span>
                             <span aria-hidden className="leading-none">
                                 %
@@ -96,21 +76,17 @@ export const TickerCard = ({ item }: TickerCardProps) => {
                                 ₩
                             </span>
                             <span
-                                className="inline-flex items-center"
+                                className="inline-flex items-center animate-fade-in"
+                                key={formatDelta(
+                                    item.signed_change_price,
+                                    item.market
+                                )}
                                 style={{ transform: "translateY(0.5px)" }}
                             >
-                                <FlipNumbers
-                                    height={14}
-                                    width={7}
-                                    color="currentColor"
-                                    background="transparent"
-                                    play
-                                    duration={0.7}
-                                    numbers={formatDelta(
-                                        item.signed_change_price,
-                                        item.market
-                                    )}
-                                />
+                                {formatDelta(
+                                    item.signed_change_price,
+                                    item.market
+                                )}
                             </span>
                         </span>
                     </p>
@@ -125,18 +101,11 @@ export const TickerCard = ({ item }: TickerCardProps) => {
                     >
                         <div className="text-left text-sm">24h Vol</div>
                         <div className="text-right tabular-nums text-base font-medium break-words">
-                            <span className="inline-flex whitespace-nowrap">
-                                <FlipNumbers
-                                    height={16}
-                                    width={10}
-                                    color="currentColor"
-                                    background="transparent"
-                                    play
-                                    duration={0.7}
-                                    numbers={formatQuantity(
-                                        item.acc_trade_volume_24h
-                                    )}
-                                />
+                            <span
+                                className="inline-flex whitespace-nowrap animate-fade-in"
+                                key={formatQuantity(item.acc_trade_volume_24h)}
+                            >
+                                {formatQuantity(item.acc_trade_volume_24h)}
                             </span>
                         </div>
                     </div>
@@ -146,18 +115,15 @@ export const TickerCard = ({ item }: TickerCardProps) => {
                     >
                         <div className="text-left text-sm">24h Price</div>
                         <div className="text-right tabular-nums text-base font-medium break-words">
-                            <span className="inline-flex whitespace-nowrap">
-                                <FlipNumbers
-                                    height={16}
-                                    width={10}
-                                    color="currentColor"
-                                    background="transparent"
-                                    play
-                                    duration={0.7}
-                                    numbers={formatInteger(
-                                        Math.round(item.acc_trade_price_24h)
-                                    )}
-                                />
+                            <span
+                                className="inline-flex whitespace-nowrap animate-fade-in"
+                                key={formatInteger(
+                                    Math.round(item.acc_trade_price_24h)
+                                )}
+                            >
+                                {formatInteger(
+                                    Math.round(item.acc_trade_price_24h)
+                                )}
                             </span>
                         </div>
                     </div>
