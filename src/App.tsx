@@ -1,9 +1,12 @@
 import { useTickerData } from "@/hooks/useTickerData";
+import { useCandleData } from "@/hooks/useCandleData";
 import { TickerCard } from "@/components/TickerCard";
 import { formatTime } from "@/utils/formatters";
 
 function App() {
     const { data, loading, lastUpdate } = useTickerData();
+    const markets = data.map((d) => d.market);
+    const { candleData } = useCandleData(markets);
 
     return (
         <div className="min-h-screen py-8">
@@ -34,7 +37,11 @@ function App() {
                               />
                           ))
                         : data.map((item) => (
-                              <TickerCard key={item.market} item={item} />
+                              <TickerCard
+                                  key={item.market}
+                                  item={item}
+                                  candleData={candleData[item.market]}
+                              />
                           ))}
                 </div>
             </div>

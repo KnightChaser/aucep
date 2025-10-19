@@ -11,4 +11,13 @@ export default defineConfig({
             "@": path.resolve(__dirname, "./src"),
         },
     },
+    server: {
+        proxy: {
+            "/upbit": {
+                target: "https://api.upbit.com",
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/upbit/, ""),
+            },
+        },
+    },
 });

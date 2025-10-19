@@ -1,5 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ExtendedTickerData } from "@/hooks/useTickerData";
+import type { CandleData } from "@/hooks/useCandleData";
+import { MiniChart } from "@/components/MiniChart";
 import {
     formatPrice,
     formatChange,
@@ -11,89 +13,85 @@ import {
 
 interface TickerCardProps {
     item: ExtendedTickerData;
+    candleData?: CandleData[];
 }
 
-export const TickerCard = ({ item }: TickerCardProps) => {
+export const TickerCard = ({ item, candleData }: TickerCardProps) => {
     const { changeIcon, changeColor, ariaLabel } = getChangeDisplay(
         item.change,
         item.signed_change_rate
     );
 
     return (
-        <Card className="h-80 flex flex-col bg-white shadow-lg hover:shadow-xl transition-shadow rounded-lg overflow-hidden">
-            <CardHeader className="pt-4 px-4">
+        <Card className="h-auto flex flex-col bg-white shadow-lg hover:shadow-xl transition-shadow rounded-lg overflow-hidden">
+            <CardHeader className="pt-4 px-4 pb-3">
                 <CardTitle className="text-lg font-semibold text-center tracking-wide">
                     {item.market.replace("KRW-", "")} ({item.english_name})
                 </CardTitle>
             </CardHeader>
 
-            <div className="flex-1 flex items-center px-4">
-                <div className="w-full text-center">
-                    <p
-                        className="text-2xl font-extrabold text-gray-900 tabular-nums flex items-center justify-center"
-                        style={{ fontFeatureSettings: "'tnum'" }}
-                    >
-                        <span className="inline-flex items-center gap-0.5 whitespace-nowrap">
-                            <span aria-hidden className="leading-none">
-                                ₩
+            <div className="px-4 pb-3">
+                <div className="flex items-start gap-3">
+                    <div className="flex-1">
+                        <p
+                            className="text-2xl font-extrabold text-gray-900 tabular-nums"
+                            style={{ fontFeatureSettings: "'tnum'" }}
+                        >
+                            <span className="inline-flex items-baseline gap-0.5">
+                                <span aria-hidden className="text-lg">
+                                    ₩
+                                </span>
+                                <span
+                                    className="animate-fade-in"
+                                    key={formatPrice(
+                                        item.trade_price,
+                                        item.market
+                                    )}
+                                >
+                                    {formatPrice(item.trade_price, item.market)}
+                                </span>
                             </span>
+                        </p>
+                        <p
+                            className={`mt-1 text-base font-medium ${changeColor} tabular-nums flex items-center gap-1`}
+                            aria-label={ariaLabel}
+                            style={{ fontFeatureSettings: "'tnum'" }}
+                        >
+                            <span aria-hidden>{changeIcon}</span>
                             <span
-                                className="inline-flex items-center animate-fade-in"
-                                key={formatPrice(item.trade_price, item.market)}
-                                style={{ transform: "translateY(1px)" }}
-                            >
-                                {formatPrice(item.trade_price, item.market)}
-                            </span>
-                        </span>
-                    </p>
-                    <p
-                        className={`mt-2 text-lg font-medium ${changeColor} tabular-nums flex items-center justify-center`}
-                        aria-label={ariaLabel}
-                        style={{ fontFeatureSettings: "'tnum'" }}
-                    >
-                        <span className="inline-flex items-center gap-1 whitespace-nowrap">
-                            <span aria-hidden className="leading-none">
-                                {changeIcon}
-                            </span>
-                            <span
-                                className="inline-flex items-center animate-fade-in"
+                                className="animate-fade-in"
                                 key={formatChange(item.signed_change_rate)}
-                                style={{ transform: "translateY(0.5px)" }}
                             >
-                                {formatChange(item.signed_change_rate)}
+                                {formatChange(item.signed_change_rate)}%
                             </span>
-                            <span aria-hidden className="leading-none">
-                                %
-                            </span>
-                        </span>
-                    </p>
-                    <p
-                        className="mt-1 text-sm text-gray-500 tabular-nums flex items-center justify-center"
-                        style={{ fontFeatureSettings: "'tnum'" }}
-                    >
-                        <span className="inline-flex items-center gap-0.5 whitespace-nowrap">
-                            <span aria-hidden className="leading-none">
-                                ₩
-                            </span>
+                        </p>
+                        <p
+                            className="text-xs text-gray-500 tabular-nums mt-0.5"
+                            style={{ fontFeatureSettings: "'tnum'" }}
+                        >
                             <span
-                                className="inline-flex items-center animate-fade-in"
+                                className="animate-fade-in"
                                 key={formatDelta(
                                     item.signed_change_price,
                                     item.market
                                 )}
-                                style={{ transform: "translateY(0.5px)" }}
                             >
+                                ₩
                                 {formatDelta(
                                     item.signed_change_price,
                                     item.market
                                 )}
                             </span>
-                        </span>
-                    </p>
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            <CardContent className="py-4 px-4 bg-gray-50">
+            <div className="px-4 pb-3">
+                <MiniChart data={candleData || []} changeType={item.change} />
+            </div>
+
+            <CardContent className="py-3 px-4 bg-gray-50 border-t border-gray-100">
                 <div className="text-sm text-gray-600 space-y-2">
                     <div
                         className="flex justify-between items-start"
