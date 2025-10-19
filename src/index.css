@@ -25,7 +25,9 @@ body {
 }
 
 :root {
-    font-family: "Zalando Sans", system-ui, Avenir, Helvetica, Arial, sans-serif;
+    font-family: "Space Grotesk", ui-sans-serif, system-ui, -apple-system,
+        Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji",
+        "Segoe UI Emoji";
     line-height: 1.5;
     font-weight: 400;
 
