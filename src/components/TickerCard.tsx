@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import FlipNumbers from "react-flip-numbers";
-import type { TickerData } from "@/hooks/useTickerData";
+import type { ExtendedTickerData } from "@/hooks/useTickerData";
 import {
     formatPrice,
     formatChange,
@@ -11,7 +11,7 @@ import {
 } from "@/utils/formatters";
 
 interface TickerCardProps {
-    item: TickerData;
+    item: ExtendedTickerData;
 }
 
 export const TickerCard = ({ item }: TickerCardProps) => {
@@ -24,7 +24,7 @@ export const TickerCard = ({ item }: TickerCardProps) => {
         <Card className="h-80 flex flex-col bg-white shadow-lg hover:shadow-xl transition-shadow rounded-lg overflow-hidden">
             <CardHeader className="pt-4 px-4">
                 <CardTitle className="text-lg font-semibold text-center tracking-wide">
-                    {item.market.replace("KRW-", "")}
+                    {item.market.replace("KRW-", "")} ({item.english_name})
                 </CardTitle>
             </CardHeader>
 

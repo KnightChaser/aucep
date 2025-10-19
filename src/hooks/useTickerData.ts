@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import { MARKETS } from "@/constants/markets";
+
+export interface Market {
+    market: string;
+    korean_name: string;
+    english_name: string;
+}
 
 export interface TickerData {
     market: string;
@@ -21,22 +26,61 @@ export interface TickerData {
     timestamp: number;
 }
 
+export interface ExtendedTickerData extends TickerData {
+    english_name: string;
+}
+
 export const useTickerData = () => {
-    const [data, setData] = useState<TickerData[]>([]);
+    const [data, setData] = useState<ExtendedTickerData[]>([]);
     const [loading, setLoading] = useState(true);
     const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
+    const [markets, setMarkets] = useState<Market[]>([]);
 
     useEffect(() => {
-        const markets = MARKETS;
-        const url = `https://api.upbit.com/v1/ticker?markets=${markets.join(
-            ","
-        )}`;
+        const fetchMarkets = async () => {
+            try {
+                const response = await fetch(
+                    "https://api.upbit.com/v1/market/all"
+                );
+                const allMarkets: Market[] = await response.json();
+                const krwMarkets = allMarkets.filter((m) =>
+                    m.market.startsWith("KRW-")
+                );
+                setMarkets(krwMarkets);
+            } catch (error) {
+                console.error("Error fetching markets:", error);
+            }
+        };
+
+        fetchMarkets();
+    }, []);
+
+    useEffect(() => {
+        if (markets.length === 0) return;
 
         const fetchData = async () => {
             try {
-                const response = await fetch(url);
+                const marketsParam = markets.map((m) => m.market).join(",");
+                const response = await fetch(
+                    `https://api.upbit.com/v1/ticker?markets=${marketsParam}`
+                );
                 const json: TickerData[] = await response.json();
-                setData(json);
+                const merged: ExtendedTickerData[] = json.map((ticker) => {
+                    const marketInfo = markets.find(
+                        (m) => m.market === ticker.market
+                    );
+                    return {
+                        ...ticker,
+                        english_name:
+                            marketInfo?.english_name ||
+                            ticker.market.replace("KRW-", ""),
+                    };
+                });
+                setData(
+                    merged.sort(
+                        (a, b) => b.acc_trade_price_24h - a.acc_trade_price_24h
+                    )
+                );
                 setLoading(false);
                 setLastUpdate(new Date());
             } catch (error) {
@@ -49,7 +93,7 @@ export const useTickerData = () => {
         const interval = setInterval(fetchData, 1000);
 
         return () => clearInterval(interval);
-    }, []);
+    }, [markets]);
 
     return { data, loading, lastUpdate };
 };
