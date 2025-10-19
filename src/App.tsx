@@ -12,9 +12,14 @@ function App() {
         <div className="min-h-screen py-8">
             <div className="max-w-screen-2xl mx-auto px-6">
                 <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-4xl font-bold text-gray-800">
-                        Cryptocurrency Ticker
-                    </h1>
+                    <div className="inline-block select-none">
+                        <h1 className="text-4xl font-bold text-gray-800 tracking-tight">
+                            AUCEP
+                        </h1>
+                        <div className="mt-1 text-sm text-gray-500" aria-hidden>
+                            Aesthetic Upbit Cryptocurrency Exchange Panel
+                        </div>
+                    </div>
                     {lastUpdate && (
                         <p className="text-sm text-gray-600">
                             Last update: {formatTime(lastUpdate)}
