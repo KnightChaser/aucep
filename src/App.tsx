@@ -12,18 +12,15 @@ import { Dashboard } from "@/components/dashboard/Dashboard";
 function App() {
   // Fetch real-time ticker data for KRW markets
   const { data, loading, lastUpdate } = useTickerData();
+
   // Extract market codes for candle data fetching (memoized to prevent unnecessary re-renders)
   const markets = useMemo(() => data.map((d) => d.market), [data]);
+
   // Fetch candle data for charts
   const { candleData } = useCandleData(markets);
+
   // Compute market totals and crypto equivalents
-  const {
-    formattedKRWTotal,
-    btcEquivalent,
-    ethEquivalent,
-    xrpEquivalent,
-    formatCrypto,
-  } = useMarketTotals(data);
+  const marketTotals = useMarketTotals(data);
 
   // Market filtering
   const {
@@ -33,9 +30,22 @@ function App() {
     filteredData,
     setMarketVisible,
   } = useMarketFilter(markets);
+
   const filteredTickerData = useMemo(
     () => filteredData(data),
     [filteredData, data]
+  );
+
+  // Aggregate filter state for cleaner prop passing
+  const marketFilter = useMemo(
+    () => ({
+      allMarkets: markets,
+      visibleMarkets,
+      onToggleMarket: toggleMarket,
+      onToggleAll: toggleAll,
+      onSetMarketVisible: setMarketVisible,
+    }),
+    [markets, visibleMarkets, toggleMarket, toggleAll, setMarketVisible]
   );
 
   return (
@@ -44,16 +54,8 @@ function App() {
       loading={loading}
       lastUpdate={lastUpdate}
       candleData={candleData}
-      formattedKRWTotal={formattedKRWTotal}
-      btcEquivalent={btcEquivalent}
-      ethEquivalent={ethEquivalent}
-      xrpEquivalent={xrpEquivalent}
-      formatCrypto={formatCrypto}
-      allMarkets={markets}
-      visibleMarkets={visibleMarkets}
-      onToggleMarket={toggleMarket}
-      onToggleAll={toggleAll}
-      onSetMarketVisible={setMarketVisible}
+      marketTotals={marketTotals}
+      marketFilter={marketFilter}
     />
   );
 }

@@ -5,6 +5,7 @@ import {
   CANDLE_REFRESH_MS,
   CANDLE_COUNT,
 } from "@/constants/api";
+import { fetchCandles } from "@/lib/api";
 
 interface CandleDataMap {
   [market: string]: CandleData[];
@@ -27,14 +28,13 @@ export const useCandleData = (markets: string[]) => {
     let cancelled = false;
 
     const fetchOne = async (market: string) => {
-      const toParam = new Date().toISOString();
-      const url = `/upbit/v1/candles/minutes/3?market=${market}&to=${encodeURIComponent(
-        toParam
-      )}&count=${CANDLE_COUNT}`;
-      const res = await fetch(url);
-      if (!res.ok) return null;
-      const json: CandleData[] = await res.json();
-      return json.reverse();
+      try {
+        const json = await fetchCandles(market, CANDLE_COUNT);
+        return json.reverse();
+      } catch (error) {
+        console.error(`Error fetching candles for ${market}:`, error);
+        return null;
+      }
     };
 
     const runSequential = async () => {
@@ -43,23 +43,19 @@ export const useCandleData = (markets: string[]) => {
       for (let i = 0; i < queueRef.current.length; i++) {
         if (cancelled) break;
         const market = queueRef.current[i];
-        try {
-          console.log(
-            `[candle] ${i + 1}/${
-              queueRef.current.length
-            } fetching ${market}; next in ${CANDLE_REQUEST_INTERVAL_MS}ms`
-          );
-          const candles = await fetchOne(market);
-          if (candles) {
-            // apply update incrementally so panels render one-by-one
-            setCandleData((prev) => ({
-              ...prev,
-              [market]: candles,
-            }));
-            console.log(`[candle] done ${market} (${candles.length} pts)`);
-          }
-        } catch (e) {
-          console.error("candle fetch error", market, e);
+        console.log(
+          `[candle] ${i + 1}/${
+            queueRef.current.length
+          } fetching ${market}; next in ${CANDLE_REQUEST_INTERVAL_MS}ms`
+        );
+        const candles = await fetchOne(market);
+        if (candles) {
+          // apply update incrementally so panels render one-by-one
+          setCandleData((prev) => ({
+            ...prev,
+            [market]: candles,
+          }));
+          console.log(`[candle] done ${market} (${candles.length} pts)`);
         }
         // throttle to 5 req/sec
         await new Promise((r) => setTimeout(r, CANDLE_REQUEST_INTERVAL_MS));

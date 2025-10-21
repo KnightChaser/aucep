@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import type { Market, TickerData, ExtendedTickerData } from "@/types";
-import { UPBIT_API_BASE, TICKER_UPDATE_INTERVAL_MS } from "@/constants/api";
+import { TICKER_UPDATE_INTERVAL_MS } from "@/constants/api";
+import { fetchMarkets, fetchTicker } from "@/lib/api";
 
 export const useTickerData = () => {
   const [data, setData] = useState<ExtendedTickerData[]>([]);
@@ -9,10 +10,9 @@ export const useTickerData = () => {
   const [markets, setMarkets] = useState<Market[]>([]);
 
   useEffect(() => {
-    const fetchMarkets = async () => {
+    const loadMarkets = async () => {
       try {
-        const response = await fetch(`${UPBIT_API_BASE}/market/all`);
-        const allMarkets: Market[] = await response.json();
+        const allMarkets = await fetchMarkets();
         const krwMarkets = allMarkets.filter((m) =>
           m.market.startsWith("KRW-")
         );
@@ -22,7 +22,7 @@ export const useTickerData = () => {
       }
     };
 
-    fetchMarkets();
+    loadMarkets();
   }, []);
 
   useEffect(() => {
@@ -30,11 +30,8 @@ export const useTickerData = () => {
 
     const fetchData = async () => {
       try {
-        const marketsParam = markets.map((m) => m.market).join(",");
-        const response = await fetch(
-          `${UPBIT_API_BASE}/ticker?markets=${marketsParam}`
-        );
-        const json: TickerData[] = await response.json();
+        const marketCodes = markets.map((m) => m.market);
+        const json: TickerData[] = await fetchTicker(marketCodes);
         const merged: ExtendedTickerData[] = json.map((ticker) => {
           const marketInfo = markets.find((m) => m.market === ticker.market);
           return {

@@ -1,4 +1,9 @@
-import type { ExtendedTickerData, CandleData } from "@/types";
+import type {
+  ExtendedTickerData,
+  CandleData,
+  MarketTotals,
+  MarketFilterState,
+} from "@/types";
 import { TickerCard } from "@/components/TickerCard";
 import { MarketFilter } from "@/components/dashboard/MarketFilter";
 import { formatTime } from "@/utils/formatters";
@@ -8,16 +13,8 @@ interface DashboardProps {
   loading: boolean;
   lastUpdate: Date | null;
   candleData: { [market: string]: CandleData[] };
-  formattedKRWTotal: string;
-  btcEquivalent: number | null;
-  ethEquivalent: number | null;
-  xrpEquivalent: number | null;
-  formatCrypto: (v: number) => string;
-  allMarkets: string[];
-  visibleMarkets: Set<string>;
-  onToggleMarket: (market: string) => void;
-  onToggleAll: (visible: boolean) => void;
-  onSetMarketVisible?: (market: string, visible: boolean) => void;
+  marketTotals: MarketTotals;
+  marketFilter: MarketFilterState;
 }
 
 export const Dashboard = ({
@@ -25,17 +22,24 @@ export const Dashboard = ({
   loading,
   lastUpdate,
   candleData,
-  formattedKRWTotal,
-  btcEquivalent,
-  ethEquivalent,
-  xrpEquivalent,
-  formatCrypto,
-  allMarkets,
-  visibleMarkets,
-  onToggleMarket,
-  onToggleAll,
-  onSetMarketVisible,
+  marketTotals,
+  marketFilter,
 }: DashboardProps) => {
+  const {
+    formattedKRWTotal,
+    btcEquivalent,
+    ethEquivalent,
+    xrpEquivalent,
+    formatCrypto,
+  } = marketTotals;
+
+  const {
+    allMarkets,
+    visibleMarkets,
+    onToggleMarket,
+    onToggleAll,
+    onSetMarketVisible,
+  } = marketFilter;
   return (
     <div className="min-h-screen py-8">
       <div className="max-w-screen-2xl mx-auto px-6">

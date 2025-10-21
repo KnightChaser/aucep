@@ -1,6 +1,34 @@
 import { useMemo } from "react";
 import type { ExtendedTickerData } from "@/types";
 
+/**
+ * Finds the trading price for a specific cryptocurrency
+ */
+const getCryptoPrice = (
+  data: ExtendedTickerData[],
+  symbol: string
+): number | null => {
+  return data.find((d) => d.market === `KRW-${symbol}`)?.trade_price ?? null;
+};
+
+/**
+ * Calculates the equivalent amount of cryptocurrency for a given KRW total
+ */
+const calculateCryptoEquivalent = (
+  krwTotal: number,
+  cryptoPrice: number | null
+): number | null => {
+  return cryptoPrice ? krwTotal / cryptoPrice : null;
+};
+
+/**
+ * Formats cryptocurrency amounts with appropriate decimal places
+ */
+const formatCrypto = (v: number) =>
+  v >= 1
+    ? v.toLocaleString("en-US", { maximumFractionDigits: 4 })
+    : v.toLocaleString("en-US", { maximumFractionDigits: 8 });
+
 export const useMarketTotals = (data: ExtendedTickerData[]) => {
   // 24h KRW total across all markets
   const totalAccTradePrice24h = useMemo(
@@ -16,36 +44,30 @@ export const useMarketTotals = (data: ExtendedTickerData[]) => {
     [totalAccTradePrice24h]
   );
 
-  // Find spot prices for conversions
-  const btcPrice = useMemo(
-    () => data.find((d) => d.market === "KRW-BTC")?.trade_price ?? null,
-    [data]
-  );
-  const ethPrice = useMemo(
-    () => data.find((d) => d.market === "KRW-ETH")?.trade_price ?? null,
-    [data]
-  );
-  const xrpPrice = useMemo(
-    () => data.find((d) => d.market === "KRW-XRP")?.trade_price ?? null,
+  // Get crypto prices for conversion
+  const cryptoPrices = useMemo(
+    () => ({
+      BTC: getCryptoPrice(data, "BTC"),
+      ETH: getCryptoPrice(data, "ETH"),
+      XRP: getCryptoPrice(data, "XRP"),
+    }),
     [data]
   );
 
-  const formatCrypto = (v: number) =>
-    v >= 1
-      ? v.toLocaleString("en-US", { maximumFractionDigits: 4 })
-      : v.toLocaleString("en-US", { maximumFractionDigits: 8 });
-
+  // Calculate crypto equivalents
   const btcEquivalent = useMemo(
-    () => (btcPrice ? totalAccTradePrice24h / btcPrice : null),
-    [btcPrice, totalAccTradePrice24h]
+    () => calculateCryptoEquivalent(totalAccTradePrice24h, cryptoPrices.BTC),
+    [totalAccTradePrice24h, cryptoPrices.BTC]
   );
+
   const ethEquivalent = useMemo(
-    () => (ethPrice ? totalAccTradePrice24h / ethPrice : null),
-    [ethPrice, totalAccTradePrice24h]
+    () => calculateCryptoEquivalent(totalAccTradePrice24h, cryptoPrices.ETH),
+    [totalAccTradePrice24h, cryptoPrices.ETH]
   );
+
   const xrpEquivalent = useMemo(
-    () => (xrpPrice ? totalAccTradePrice24h / xrpPrice : null),
-    [xrpPrice, totalAccTradePrice24h]
+    () => calculateCryptoEquivalent(totalAccTradePrice24h, cryptoPrices.XRP),
+    [totalAccTradePrice24h, cryptoPrices.XRP]
   );
 
   return {

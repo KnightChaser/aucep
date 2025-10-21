@@ -27,3 +27,19 @@ export interface TickerData {
 export interface ExtendedTickerData extends TickerData {
   english_name: string;
 }
+
+export interface MarketTotals {
+  formattedKRWTotal: string;
+  btcEquivalent: number | null;
+  ethEquivalent: number | null;
+  xrpEquivalent: number | null;
+  formatCrypto: (v: number) => string;
+}
+
+export interface MarketFilterState {
+  allMarkets: string[];
+  visibleMarkets: Set<string>;
+  onToggleMarket: (market: string) => void;
+  onToggleAll: (visible: boolean) => void;
+  onSetMarketVisible?: (market: string, visible: boolean) => void;
+}
