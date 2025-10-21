@@ -1,5 +1,6 @@
 import type { ExtendedTickerData, CandleData } from "@/types";
 import { TickerCard } from "@/components/TickerCard";
+import { MarketFilter } from "@/components/dashboard/MarketFilter";
 import { formatTime } from "@/utils/formatters";
 
 interface DashboardProps {
@@ -12,6 +13,11 @@ interface DashboardProps {
   ethEquivalent: number | null;
   xrpEquivalent: number | null;
   formatCrypto: (v: number) => string;
+  allMarkets: string[];
+  visibleMarkets: Set<string>;
+  onToggleMarket: (market: string) => void;
+  onToggleAll: (visible: boolean) => void;
+  onSetMarketVisible?: (market: string, visible: boolean) => void;
 }
 
 export const Dashboard = ({
@@ -24,6 +30,11 @@ export const Dashboard = ({
   ethEquivalent,
   xrpEquivalent,
   formatCrypto,
+  allMarkets,
+  visibleMarkets,
+  onToggleMarket,
+  onToggleAll,
+  onSetMarketVisible,
 }: DashboardProps) => {
   return (
     <div className="min-h-screen py-8">
@@ -86,8 +97,15 @@ export const Dashboard = ({
               </div>
             </div>
 
-            {/* Right: Last update */}
-            <div className="justify-self-end">
+            {/* Right: Filter and Last update */}
+            <div className="justify-self-end flex items-center gap-4">
+              <MarketFilter
+                markets={allMarkets}
+                visibleMarkets={visibleMarkets}
+                onToggleMarket={onToggleMarket}
+                onToggleAll={onToggleAll}
+                onSetMarketVisible={onSetMarketVisible}
+              />
               {lastUpdate && (
                 <p className="text-sm text-gray-600">
                   Last update: {formatTime(lastUpdate)}
