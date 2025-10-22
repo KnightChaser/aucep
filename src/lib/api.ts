@@ -44,7 +44,7 @@ export const fetchTicker = (markets: string[]) => {
 export const fetchCandles = (market: string, count: number) => {
   const toParam = new Date().toISOString();
   return apiFetch<Array<any>>(
-    `/upbit/v1/candles/minutes/3?market=${market}&to=${encodeURIComponent(
+    `/upbit/v1/candles/minutes/10?market=${market}&to=${encodeURIComponent(
       toParam
     )}&count=${count}`
   );

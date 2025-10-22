@@ -90,9 +90,9 @@ export const MiniChart = ({ data, changeType, isLoading }: MiniChartProps) => {
         />
       </svg>
       <div className="flex justify-between px-2 pt-1 pb-1 text-[10px] text-gray-400">
-        <span>-6h</span>
-        <span>-4h</span>
-        <span>-2h</span>
+        <span>-24h</span>
+        <span>-16h</span>
+        <span>-8h</span>
         <span>now</span>
       </div>
     </div>
