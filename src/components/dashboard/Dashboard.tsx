@@ -1,3 +1,4 @@
+import { useState, useMemo } from "react";
 import type {
   ExtendedTickerData,
   CandleData,
@@ -6,6 +7,7 @@ import type {
 } from "@/types";
 import { TickerCard } from "@/components/TickerCard";
 import { MarketFilter } from "@/components/dashboard/MarketFilter";
+import { SortControls, type SortConfig } from "@/components/dashboard/SortControls";
 import { formatTime } from "@/utils/formatters";
 import { motion } from "framer-motion";
 
@@ -43,6 +45,36 @@ export const Dashboard = ({
     onToggleAll,
     onSetMarketVisible,
   } = marketFilter;
+
+  const [sortConfig, setSortConfig] = useState<SortConfig>({
+    field: 'trade_price_24h',
+    direction: 'desc'
+  });
+
+  const sortedData = useMemo(() => {
+    const sorted = [...data];
+    sorted.sort((a, b) => {
+      let aValue = 0;
+      let bValue = 0;
+
+      if (sortConfig.field === 'change_rate') {
+        aValue = a.signed_change_rate;
+        bValue = b.signed_change_rate;
+      } else if (sortConfig.field === 'trade_price_24h') {
+        aValue = a.acc_trade_price_24h;
+        bValue = b.acc_trade_price_24h;
+      }
+
+      if (aValue < bValue) {
+        return sortConfig.direction === 'asc' ? -1 : 1;
+      }
+      if (aValue > bValue) {
+        return sortConfig.direction === 'asc' ? 1 : -1;
+      }
+      return 0;
+    });
+    return sorted;
+  }, [data, sortConfig]);
 
   const isChartLoading = progress.total > 0 && progress.current < progress.total;
   
@@ -128,13 +160,16 @@ export const Dashboard = ({
 
             {/* Right: Filter and Last update */}
             <div className="justify-self-end flex flex-col items-end gap-3">
-              <MarketFilter
-                markets={allMarkets}
-                visibleMarkets={visibleMarkets}
-                onToggleMarket={onToggleMarket}
-                onToggleAll={onToggleAll}
-                onSetMarketVisible={onSetMarketVisible}
-              />
+              <div className="flex items-center gap-3">
+                <SortControls sortConfig={sortConfig} onSortChange={setSortConfig} />
+                <MarketFilter
+                  markets={allMarkets}
+                  visibleMarkets={visibleMarkets}
+                  onToggleMarket={onToggleMarket}
+                  onToggleAll={onToggleAll}
+                  onSetMarketVisible={onSetMarketVisible}
+                />
+              </div>
               {lastUpdate && (
                 <div className="flex items-center gap-2 text-xs text-gray-500 font-mono">
                   <span>LAST SYNC</span>
@@ -159,7 +194,7 @@ export const Dashboard = ({
                   className="h-64 glass-panel rounded-2xl animate-pulse"
                 />
               ))
-            : data.map((item) => (
+            : sortedData.map((item) => (
                 <TickerCard
                   key={item.market}
                   item={item}
