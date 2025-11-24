@@ -45,13 +45,13 @@ export const MarketFilter = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
-          Filter Markets ({visibleMarkets.size}/{markets.length})
+        <Button variant="outline" size="sm" className="font-mono">
+          FILTER [{visibleMarkets.size}/{markets.length}]
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-md max-h-[80vh] overflow-hidden flex flex-col">
         <DialogHeader>
-          <DialogTitle>Filter Markets</DialogTitle>
+          <DialogTitle>MARKET_FILTER_PROTOCOL</DialogTitle>
         </DialogHeader>
 
         <div className="flex gap-2 mb-4">
@@ -60,36 +60,38 @@ export const MarketFilter = ({
             size="sm"
             onClick={() => handleToggleAll(true)}
             disabled={allVisible}
+            className="flex-1"
           >
-            Select All
+            SELECT ALL
           </Button>
           <Button
             variant="outline"
             size="sm"
             onClick={() => handleToggleAll(false)}
             disabled={noneVisible}
+            className="flex-1"
           >
-            Deselect All
+            DESELECT ALL
           </Button>
         </div>
 
         <div className="mb-4">
-          <Label htmlFor="search">Search Markets</Label>
+          <Label htmlFor="search" className="mb-2 block text-neon-blue">Search Markets</Label>
           <Input
             id="search"
-            placeholder="Search by market code..."
+            placeholder="SEARCH_MARKET_CODE..."
             value={searchTerm}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setSearchTerm(e.target.value)
             }
-            className="mt-1"
+            className="mt-1 font-mono"
           />
         </div>
 
-        <div className="flex-1 overflow-y-auto border rounded-md p-2">
+        <div className="flex-1 overflow-y-auto border-2 border-gray-800 bg-black/50 p-2 custom-scrollbar">
           <div className="space-y-2">
             {filteredMarkets.map((market) => (
-              <div key={market} className="flex items-center space-x-2">
+              <div key={market} className="flex items-center space-x-3 p-2 hover:bg-gray-900 transition-colors border border-transparent hover:border-gray-700">
                 <Checkbox
                   id={market}
                   checked={visibleMarkets.has(market)}
@@ -101,15 +103,15 @@ export const MarketFilter = ({
                 />
                 <Label
                   htmlFor={market}
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                  className="text-sm font-bold cursor-pointer flex-1 text-white"
                 >
                   {market.replace("KRW-", "")}
                 </Label>
               </div>
             ))}
             {filteredMarkets.length === 0 && searchTerm && (
-              <p className="text-sm text-gray-500 text-center py-4">
-                No markets found matching "{searchTerm}"
+              <p className="text-sm text-gray-500 text-center py-4 font-mono">
+                NO_DATA_FOUND: "{searchTerm}"
               </p>
             )}
           </div>
