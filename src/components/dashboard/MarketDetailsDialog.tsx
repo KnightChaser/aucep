@@ -80,9 +80,9 @@ export const MarketDetailsDialog = ({
       return `rgb(${result.join(",")})`;
     };
 
-    const gray = [156, 163, 175]; // gray-400 (white smoky gray)
-    const red = [239, 68, 68];    // red-500
-    const green = [34, 197, 94];  // green-500
+    const gray = [220, 220, 220]; // Much brighter gray/white
+    const red = [255, 30, 30];    // Intense bright red
+    const green = [30, 255, 80];  // Intense bright green
     const saturationLimit = 15;   // Full color at 15% change
 
     for (let i = start; i < end; i += binWidth) {
@@ -220,7 +220,7 @@ export const MarketDetailsDialog = ({
             </div>
             <div className="relative h-1.5 bg-white/5 rounded-full overflow-visible mt-8 mb-4">
               {/* Background Bar */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-neon-red/20 via-gray-500/20 to-neon-green/20" />
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-neon-red/60 via-white/30 to-neon-green/60" />
               
               {/* Current Price Marker */}
               <div 
