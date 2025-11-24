@@ -8,6 +8,7 @@ import type {
 import { TickerCard } from "@/components/TickerCard";
 import { MarketFilter } from "@/components/dashboard/MarketFilter";
 import { SortControls, type SortConfig } from "@/components/dashboard/SortControls";
+import { MarketDetailsDialog } from "@/components/dashboard/MarketDetailsDialog";
 import { formatTime } from "@/utils/formatters";
 import { motion } from "framer-motion";
 
@@ -50,6 +51,14 @@ export const Dashboard = ({
     field: 'trade_price_24h',
     direction: 'desc'
   });
+
+  const [selectedTicker, setSelectedTicker] = useState<ExtendedTickerData | null>(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+
+  const handleTickerClick = (item: ExtendedTickerData) => {
+    setSelectedTicker(item);
+    setIsDetailsOpen(true);
+  };
 
   const sortedData = useMemo(() => {
     const sorted = [...data];
@@ -199,9 +208,16 @@ export const Dashboard = ({
                   key={item.market}
                   item={item}
                   candleData={candleData[item.market]}
+                  onClick={() => handleTickerClick(item)}
                 />
               ))}
         </motion.div>
+
+        <MarketDetailsDialog
+          isOpen={isDetailsOpen}
+          onClose={() => setIsDetailsOpen(false)}
+          item={selectedTicker}
+        />
       </div>
     </div>
   );

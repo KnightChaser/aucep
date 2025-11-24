@@ -13,9 +13,10 @@ import { motion } from "framer-motion";
 interface TickerCardProps {
   item: ExtendedTickerData;
   candleData?: CandleData[];
+  onClick?: () => void;
 }
 
-export const TickerCard = ({ item, candleData }: TickerCardProps) => {
+export const TickerCard = ({ item, candleData, onClick }: TickerCardProps) => {
   const { changeIcon, ariaLabel } = getChangeDisplay(
     item.change,
     item.signed_change_rate
@@ -34,7 +35,8 @@ export const TickerCard = ({ item, candleData }: TickerCardProps) => {
       animate={{ opacity: 1, scale: 1 }}
       whileHover={{ scale: 1.02, translateY: -2 }}
       transition={{ type: "spring", stiffness: 400, damping: 30 }}
-      className={`h-auto flex flex-col glass-panel rounded-2xl overflow-hidden relative group transition-all duration-300 ${glowClass}`}
+      onClick={onClick}
+      className={`h-auto flex flex-col glass-panel rounded-2xl overflow-hidden relative group transition-all duration-300 cursor-pointer ${glowClass}`}
     >
       <div className="pt-5 px-6 pb-2 flex justify-between items-start">
         <div>
