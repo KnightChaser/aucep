@@ -8,6 +8,7 @@ import {
 import type { ExtendedTickerData } from "@/types";
 import { formatPrice, formatQuantity, formatInteger, formatChange } from "@/utils/formatters";
 import { ArrowUp, ArrowDown, Minus, Trophy, TrendingUp, TrendingDown } from "lucide-react";
+import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell, ReferenceLine, Label } from "recharts";
 
 interface MarketDetailsDialogProps {
   isOpen: boolean;
@@ -56,9 +57,66 @@ export const MarketDetailsDialog = ({
     return null;
   }, [allTickerData, item.market, item.signed_change_rate]);
 
+  // Histogram Logic
+  const histogramData = useMemo(() => {
+    if (!allTickerData || allTickerData.length === 0) return [];
+
+    const rates = allTickerData.map((t) => t.signed_change_rate * 100);
+    const minRate = Math.floor(Math.min(...rates));
+    const maxRate = Math.ceil(Math.max(...rates));
+    
+    const binWidth = 1; // 1%
+    const bins = [];
+    
+    const start = Math.floor(minRate / binWidth) * binWidth;
+    const end = Math.ceil(maxRate / binWidth) * binWidth;
+
+    // Helper for color interpolation
+    const interpolateColor = (startColor: number[], endColor: number[], factor: number) => {
+      const result = startColor.map((start, i) => {
+        const end = endColor[i];
+        return Math.round(start + (end - start) * factor);
+      });
+      return `rgb(${result.join(",")})`;
+    };
+
+    const gray = [156, 163, 175]; // gray-400 (white smoky gray)
+    const red = [239, 68, 68];    // red-500
+    const green = [34, 197, 94];  // green-500
+    const saturationLimit = 15;   // Full color at 15% change
+
+    for (let i = start; i < end; i += binWidth) {
+      const binMin = i;
+      const binMax = i + binWidth;
+      const binMid = (binMin + binMax) / 2;
+      const count = rates.filter((r) => r >= binMin && r < binMax).length;
+      
+      // Calculate color intensity
+      const intensity = Math.min(Math.abs(binMid) / saturationLimit, 1);
+      let fill;
+      
+      if (binMid < 0) {
+        fill = interpolateColor(gray, red, intensity);
+      } else {
+        fill = interpolateColor(gray, green, intensity);
+      }
+      
+      bins.push({ 
+        name: `${binMin}%`, 
+        min: binMin,
+        max: binMax,
+        count,
+        fill
+      });
+    }
+    return bins;
+  }, [allTickerData]);
+
+  const currentRate = item.signed_change_rate * 100;
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-2xl bg-[#0a0a0a]/95 border-white/10 backdrop-blur-xl">
+      <DialogContent className="max-w-2xl bg-[#0a0a0a]/95 border-white/10 backdrop-blur-xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex flex-col gap-2">
             <div className="flex items-center gap-3 text-2xl">
@@ -109,6 +167,48 @@ export const MarketDetailsDialog = ({
                 {item.signed_change_price > 0 ? "+" : ""}
                 {formatInteger(item.signed_change_price)} KRW
               </div>
+            </div>
+          </div>
+
+          {/* Market Distribution Histogram */}
+          <div className="space-y-2">
+            <div className="text-sm text-gray-400">Market Performance Distribution (24h %)</div>
+            <div className="h-48 w-full pt-4">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={histogramData} barCategoryGap={1}>
+                  <XAxis 
+                    dataKey="min" 
+                    tick={{ fill: '#6b7280', fontSize: 10 }} 
+                    tickFormatter={(val) => `${val}%`}
+                    interval="preserveStartEnd"
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <Tooltip 
+                    cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                    contentStyle={{ backgroundColor: '#111827', borderColor: '#374151', color: '#f3f4f6' }}
+                    itemStyle={{ color: '#f3f4f6' }}
+                    labelStyle={{ color: '#9ca3af' }}
+                    formatter={(value: number) => [`${value} markets`, 'Count']}
+                    labelFormatter={(label) => `Range: ${label}`}
+                  />
+                  <Bar dataKey="count" radius={[2, 2, 0, 0]}>
+                    {histogramData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.fill} fillOpacity={0.6} />
+                    ))}
+                  </Bar>
+                  <ReferenceLine x={Math.floor(currentRate)} stroke="white" strokeDasharray="3 3">
+                    <Label 
+                      value="Current" 
+                      position="top" 
+                      fill="white" 
+                      fontSize={10} 
+                      offset={10}
+                      className="bg-black"
+                    />
+                  </ReferenceLine>
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </div>
 
