@@ -17,7 +17,7 @@ function App() {
   const markets = useMemo(() => data.map((d) => d.market), [data]);
 
   // Fetch candle data for charts
-  const { candleData } = useCandleData(markets);
+  const { candleData, progress } = useCandleData(markets);
 
   // Compute market totals and crypto equivalents
   const marketTotals = useMarketTotals(data);
@@ -56,6 +56,7 @@ function App() {
       candleData={candleData}
       marketTotals={marketTotals}
       marketFilter={marketFilter}
+      progress={progress}
     />
   );
 }

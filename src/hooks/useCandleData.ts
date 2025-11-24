@@ -14,6 +14,7 @@ interface CandleDataMap {
 export const useCandleData = (markets: string[]) => {
   const [candleData, setCandleData] = useState<CandleDataMap>({});
   const [loading, setLoading] = useState(true);
+  const [progress, setProgress] = useState({ current: 0, total: 0 });
   const queueRef = useRef<string[]>([]);
   // Stable key ignores ordering; prevents restarts when only sort order changes
   const stableKey = useMemo(
@@ -39,13 +40,17 @@ export const useCandleData = (markets: string[]) => {
 
     const runSequential = async () => {
       setLoading(true);
-      console.log(`[candle] run start: ${queueRef.current.length} markets`);
-      for (let i = 0; i < queueRef.current.length; i++) {
+      const currentQueue = queueRef.current;
+      const total = currentQueue.length;
+      setProgress({ current: 0, total });
+      
+      console.log(`[candle] run start: ${total} markets`);
+      for (let i = 0; i < total; i++) {
         if (cancelled) break;
-        const market = queueRef.current[i];
+        const market = currentQueue[i];
         console.log(
           `[candle] ${i + 1}/${
-            queueRef.current.length
+            total
           } fetching ${market}; next in ${CANDLE_REQUEST_INTERVAL_MS}ms`
         );
         const candles = await fetchOne(market);
@@ -57,6 +62,7 @@ export const useCandleData = (markets: string[]) => {
           }));
           console.log(`[candle] done ${market} (${candles.length} pts)`);
         }
+        setProgress({ current: i + 1, total });
         // throttle to 5 req/sec
         await new Promise((r) => setTimeout(r, CANDLE_REQUEST_INTERVAL_MS));
       }
@@ -81,5 +87,5 @@ export const useCandleData = (markets: string[]) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stableKey]);
 
-  return { candleData, loading };
+  return { candleData, loading, progress };
 };

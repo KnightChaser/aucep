@@ -16,6 +16,7 @@ interface DashboardProps {
   candleData: { [market: string]: CandleData[] };
   marketTotals: MarketTotals;
   marketFilter: MarketFilterState;
+  progress: { current: number; total: number };
 }
 
 export const Dashboard = ({
@@ -25,6 +26,7 @@ export const Dashboard = ({
   candleData,
   marketTotals,
   marketFilter,
+  progress,
 }: DashboardProps) => {
   const {
     formattedKRWTotal,
@@ -41,6 +43,19 @@ export const Dashboard = ({
     onToggleAll,
     onSetMarketVisible,
   } = marketFilter;
+
+  const isChartLoading = progress.total > 0 && progress.current < progress.total;
+  
+  let statusText = "SYSTEM_ONLINE";
+  let statusColor = "text-neon-green";
+
+  if (loading) {
+    statusText = "CONNECTING_TO_EXCHANGE...";
+    statusColor = "text-neon-red";
+  } else if (isChartLoading) {
+    statusText = `INITIALIZING_CHARTS [${progress.current}/${progress.total}]`;
+    statusColor = "text-neon-yellow";
+  }
 
   return (
     <div className="min-h-screen py-8 text-gray-100 font-mono">
@@ -63,7 +78,8 @@ export const Dashboard = ({
                 </span>
               </h1>
               <div className="mt-2 text-sm text-neon-blue font-bold tracking-widest uppercase border-l-2 border-neon-blue pl-2">
-                System Status: <span className="text-neon-green">ONLINE</span>
+                STATUS: <span className={`${statusColor} animate-pulse`}>{statusText}</span>
+                {isChartLoading && !loading && <span className="ml-2 text-xs text-gray-500 normal-case">(Performance may be degraded)</span>}
               </div>
             </div>
 
