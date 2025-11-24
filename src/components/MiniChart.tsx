@@ -38,33 +38,27 @@ export const MiniChart = ({ data, changeType, isLoading }: MiniChartProps) => {
 
   if (isLoading || !data || data.length === 0) {
     return (
-      <div className="w-full h-20 flex items-center justify-center bg-black/20 rounded border border-gray-800">
-        <span className="text-xs text-gray-600 font-mono animate-pulse">LOADING_DATA...</span>
+      <div className="w-full h-full flex items-center justify-center">
+        <div className="w-full h-0.5 bg-gray-800 rounded overflow-hidden">
+          <div className="h-full bg-gray-600 animate-progress w-1/2"></div>
+        </div>
       </div>
     );
   }
 
   const strokeColor =
     changeType === "RISE"
-      ? "#00ff41" // Neon Green
+      ? "#10b981" // Emerald-500
       : changeType === "FALL"
-      ? "#ff003c" // Neon Red
-      : "#666666"; // Gray
+      ? "#ef4444" // Red-500
+      : "#9ca3af"; // Gray-400
 
   return (
-    <div className="w-full bg-black/20 border border-gray-800 relative overflow-hidden">
-      {/* Grid lines background */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none" 
-           style={{ 
-             backgroundImage: `linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px)`,
-             backgroundSize: '10px 10px'
-           }}>
-      </div>
-      
+    <div className="w-full h-full relative overflow-hidden">
       <svg
         viewBox="0 0 100 40"
         preserveAspectRatio="none"
-        className="w-full h-16 relative z-10"
+        className="w-full h-full relative z-10"
       >
         {/* Area fill */}
         <defs>
@@ -78,9 +72,6 @@ export const MiniChart = ({ data, changeType, isLoading }: MiniChartProps) => {
             <stop offset="0%" stopColor={strokeColor} stopOpacity="0.2" />
             <stop offset="100%" stopColor={strokeColor} stopOpacity="0.0" />
           </linearGradient>
-          <pattern id="scanlines" patternUnits="userSpaceOnUse" width="4" height="4">
-            <path d="M0,2 L4,2" stroke="rgba(0,0,0,0.5)" strokeWidth="1" />
-          </pattern>
         </defs>
 
         {/* Fill area under the line */}
@@ -96,15 +87,10 @@ export const MiniChart = ({ data, changeType, isLoading }: MiniChartProps) => {
           stroke={strokeColor}
           strokeWidth="1.5"
           vectorEffect="non-scaling-stroke"
-          strokeLinecap="square"
-          strokeLinejoin="bevel"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </svg>
-      <div className="flex justify-between px-2 pt-1 pb-1 text-[9px] text-gray-600 font-mono uppercase tracking-wider border-t border-gray-800 bg-black/40">
-        <span>-24h</span>
-        <span>-12h</span>
-        <span>now</span>
-      </div>
     </div>
   );
 };

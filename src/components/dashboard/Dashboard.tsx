@@ -58,70 +58,68 @@ export const Dashboard = ({
   }
 
   return (
-    <div className="min-h-screen py-8 text-gray-100 font-mono">
+    <div className="min-h-screen py-12 text-gray-200 font-sans selection:bg-neon-blue/30">
       <div className="max-w-screen-2xl mx-auto px-6">
-        <header className="mb-12 border-b-4 border-neon-green pb-6 relative">
-          <div className="absolute -bottom-2 left-0 w-32 h-4 bg-neon-green skew-x-12"></div>
+        <header className="mb-12 relative">
           <div
-            className="grid items-end gap-8"
+            className="grid items-center gap-8"
             style={{ gridTemplateColumns: "1fr auto 1fr" }}
           >
             {/* Left: Title */}
-            <div className="justify-self-start select-none relative group">
-              <h1 className="text-6xl font-black tracking-tighter text-white uppercase relative z-10 mix-blend-difference">
-                AUCEP
-                <span className="text-neon-green text-6xl absolute top-0 left-1 -z-10 opacity-70 animate-pulse">
-                  AUCEP
+            <div className="justify-self-start select-none">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-3 h-12 bg-gradient-to-b from-neon-blue to-neon-purple rounded-full"></div>
+                <div>
+                  <h1 className="text-5xl font-bold tracking-tight text-white">
+                    AUCEP
+                  </h1>
+                  <div className="text-sm text-gray-400 font-medium tracking-wide">
+                    AESTHETIC UPBIT CRYPTO EXCHANGE PANEL
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2 mt-2 ml-6">
+                <div className={`w-2 h-2 rounded-full ${statusColor === 'text-neon-green' ? 'bg-neon-green shadow-[0_0_8px_rgba(16,185,129,0.6)]' : statusColor === 'text-neon-yellow' ? 'bg-neon-yellow' : 'bg-neon-red'}`}></div>
+                <span className={`text-xs font-medium tracking-wide ${statusColor}`}>
+                  {statusText.replace(/_/g, " ")}
                 </span>
-                <span className="text-neon-red text-6xl absolute top-0 -left-1 -z-10 opacity-70 animate-pulse delay-75">
-                  AUCEP
-                </span>
-              </h1>
-              <div className="mt-2 text-sm text-neon-blue font-bold tracking-widest uppercase border-l-2 border-neon-blue pl-2">
-                STATUS: <span className={`${statusColor} animate-pulse`}>{statusText}</span>
-                {isChartLoading && !loading && <span className="ml-2 text-xs text-gray-500 normal-case">(Performance may be degraded)</span>}
               </div>
             </div>
 
             {/* Center: Totals HUD */}
-            <div className="justify-self-center text-center relative">
-              <div className="absolute inset-0 border-2 border-neon-purple opacity-30 transform skew-x-12"></div>
-              <div className="bg-bg-card border-2 border-neon-purple p-6 relative z-10 neo-brutal-shadow">
-                <div className="text-[10px] text-neon-purple uppercase tracking-widest mb-2 font-bold">
-                  Total Asset Value (KRW)
+            <div className="justify-self-center text-center">
+              <div className="glass-panel rounded-2xl p-8 min-w-[320px] relative overflow-hidden group">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neon-blue via-neon-purple to-neon-blue opacity-50"></div>
+                
+                <div className="text-xs text-gray-400 uppercase tracking-widest mb-3 font-semibold">
+                  Total Asset Value
                 </div>
                 <div
-                  className="text-4xl md:text-5xl font-black text-white tabular-nums tracking-tight text-glow"
+                  className="text-5xl font-bold text-white tabular-nums tracking-tight mb-4"
                   style={{ fontFeatureSettings: "'tnum'" }}
                 >
-                  <span aria-hidden className="mr-2 text-neon-purple">
-                    ₩
-                  </span>
+                  <span className="text-2xl text-gray-500 mr-2 font-normal">₩</span>
                   {formattedKRWTotal}
                 </div>
-                <div className="mt-4 flex justify-center gap-6 text-xs font-bold tabular-nums">
+                
+                <div className="flex justify-center gap-4 text-xs font-medium tabular-nums">
                   {btcEquivalent !== null && (
-                    <div className="flex flex-col items-center">
-                      <span className="text-neon-yellow mb-1">BTC</span>
-                      <span className="bg-gray-900 px-2 py-1 border border-gray-700">
-                        {formatCrypto(btcEquivalent)}
-                      </span>
+                    <div className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 flex items-center gap-2">
+                      <span className="text-neon-yellow">BTC</span>
+                      <span className="text-gray-300">{formatCrypto(btcEquivalent)}</span>
                     </div>
                   )}
                   {ethEquivalent !== null && (
-                    <div className="flex flex-col items-center">
-                      <span className="text-neon-blue mb-1">ETH</span>
-                      <span className="bg-gray-900 px-2 py-1 border border-gray-700">
-                        {formatCrypto(ethEquivalent)}
-                      </span>
+                    <div className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 flex items-center gap-2">
+                      <span className="text-neon-blue">ETH</span>
+                      <span className="text-gray-300">{formatCrypto(ethEquivalent)}</span>
                     </div>
                   )}
                   {xrpEquivalent !== null && (
-                    <div className="flex flex-col items-center">
-                      <span className="text-neon-green mb-1">XRP</span>
-                      <span className="bg-gray-900 px-2 py-1 border border-gray-700">
-                        {formatCrypto(xrpEquivalent)}
-                      </span>
+                    <div className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 flex items-center gap-2">
+                      <span className="text-neon-green">XRP</span>
+                      <span className="text-gray-300">{formatCrypto(xrpEquivalent)}</span>
                     </div>
                   )}
                 </div>
@@ -129,7 +127,7 @@ export const Dashboard = ({
             </div>
 
             {/* Right: Filter and Last update */}
-            <div className="justify-self-end flex flex-col items-end gap-2">
+            <div className="justify-self-end flex flex-col items-end gap-3">
               <MarketFilter
                 markets={allMarkets}
                 visibleMarkets={visibleMarkets}
@@ -138,9 +136,9 @@ export const Dashboard = ({
                 onSetMarketVisible={onSetMarketVisible}
               />
               {lastUpdate && (
-                <div className="flex items-center gap-2 text-xs text-gray-500 font-mono bg-black px-2 py-1 border border-gray-800">
-                  <div className="w-2 h-2 bg-neon-green rounded-full animate-ping"></div>
-                  SYNC: {formatTime(lastUpdate)}
+                <div className="flex items-center gap-2 text-xs text-gray-500 font-mono">
+                  <span>LAST SYNC</span>
+                  <span className="text-gray-300">{formatTime(lastUpdate)}</span>
                 </div>
               )}
             </div>
@@ -149,16 +147,16 @@ export const Dashboard = ({
 
         <motion.div
           layout
-          className="grid gap-8 auto-rows-fr"
+          className="grid gap-6 auto-rows-fr"
           style={{
-            gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
           }}
         >
           {loading
             ? Array.from({ length: 28 }, (_, i) => (
                 <div
                   key={i}
-                  className="h-64 bg-bg-card border-2 border-gray-800 animate-pulse"
+                  className="h-64 glass-panel rounded-2xl animate-pulse"
                 />
               ))
             : data.map((item) => (

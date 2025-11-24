@@ -4,32 +4,32 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  font-family: "Space Grotesk", ui-sans-serif, system-ui, -apple-system,
-    Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  font-family: "Inter", "Space Grotesk", ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: dark;
   color: #e5e5e5;
-  background-color: #050505;
+  background-color: #0a0a0a;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  /* Neo-Brutal / Cyberpunk Palette */
-  --neon-green: #00ff41;
-  --neon-red: #ff003c;
-  --neon-blue: #00f3ff;
-  --neon-yellow: #fcee0a;
-  --neon-purple: #b026ff;
+  /* Modern Cyberpunk Palette */
+  --neon-green: #10b981; /* Emerald-500 */
+  --neon-red: #ef4444;   /* Red-500 */
+  --neon-blue: #3b82f6;  /* Blue-500 */
+  --neon-yellow: #eab308; /* Yellow-500 */
+  --neon-purple: #8b5cf6; /* Violet-500 */
   
-  --bg-dark: #050505;
-  --bg-card: #111111;
-  --border-color: #333333;
+  --bg-dark: #0a0a0a;
+  --bg-card: rgba(20, 20, 20, 0.6);
+  --border-color: rgba(255, 255, 255, 0.1);
   
-  --radius: 0px; /* Sharp corners for brutalism */
+  --radius: 0.75rem; /* Rounded corners for modern look */
 }
 
 body {
@@ -38,25 +38,26 @@ body {
   min-height: 100vh;
   background-color: var(--bg-dark);
   background-image: 
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
+    radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.15), transparent 40%),
+    radial-gradient(circle at 0% 50%, rgba(139, 92, 246, 0.1), transparent 40%),
+    radial-gradient(circle at 100% 50%, rgba(16, 185, 129, 0.1), transparent 40%);
+  background-attachment: fixed;
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-dark);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #333;
-  border: 1px solid var(--bg-dark);
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--neon-blue);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 @theme inline {
@@ -70,17 +71,34 @@ body {
 }
 
 @layer utilities {
-  .neo-brutal-shadow {
-    box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+  .glass-panel {
+    background: rgba(20, 20, 20, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
-  .neo-brutal-shadow-hover {
-    box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
-    transform: translate(-2px, -2px);
+  
+  .glass-panel-hover {
+    transition: all 0.3s ease;
   }
-  .neo-brutal-border {
-    border: 2px solid #333;
+  
+  .glass-panel-hover:hover {
+    background: rgba(30, 30, 30, 0.6);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
   }
+
   .text-glow {
-    text-shadow: 0 0 10px currentColor;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  }
+  
+  .neon-glow-green {
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+  }
+  
+  .neon-glow-red {
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
   }
 }
