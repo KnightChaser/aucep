@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import {
   Dialog,
   DialogContent,
@@ -6,18 +7,20 @@ import {
 } from "@/components/ui/dialog";
 import type { ExtendedTickerData } from "@/types";
 import { formatPrice, formatQuantity, formatInteger, formatChange } from "@/utils/formatters";
-import { ArrowUp, ArrowDown, Minus } from "lucide-react";
+import { ArrowUp, ArrowDown, Minus, Trophy, TrendingUp, TrendingDown } from "lucide-react";
 
 interface MarketDetailsDialogProps {
   isOpen: boolean;
   onClose: () => void;
   item: ExtendedTickerData | null;
+  allTickerData: ExtendedTickerData[];
 }
 
 export const MarketDetailsDialog = ({
   isOpen,
   onClose,
   item,
+  allTickerData,
 }: MarketDetailsDialogProps) => {
   if (!item) return null;
 
@@ -30,15 +33,59 @@ export const MarketDetailsDialog = ({
   const range = item.highest_52_week_price - item.lowest_52_week_price;
   const currentPosition = range === 0 ? 50 : ((item.trade_price - item.lowest_52_week_price) / range) * 100;
 
+  // Ranking Logic
+  const volumeRank = useMemo(() => {
+    if (!allTickerData || allTickerData.length === 0) return null;
+    const sortedByVol = [...allTickerData].sort((a, b) => b.acc_trade_price_24h - a.acc_trade_price_24h);
+    return sortedByVol.findIndex(t => t.market === item.market) + 1;
+  }, [allTickerData, item.market]);
+
+  const changeRankInfo = useMemo(() => {
+    if (!allTickerData || allTickerData.length === 0) return null;
+    if (item.signed_change_rate > 0) {
+      // Gainer ranking
+      const sortedByChangeDesc = [...allTickerData].sort((a, b) => b.signed_change_rate - a.signed_change_rate);
+      const rank = sortedByChangeDesc.findIndex(t => t.market === item.market) + 1;
+      return { type: 'gainer', rank };
+    } else if (item.signed_change_rate < 0) {
+      // Loser ranking (most negative first)
+      const sortedByChangeAsc = [...allTickerData].sort((a, b) => a.signed_change_rate - b.signed_change_rate);
+      const rank = sortedByChangeAsc.findIndex(t => t.market === item.market) + 1;
+      return { type: 'loser', rank };
+    }
+    return null;
+  }, [allTickerData, item.market, item.signed_change_rate]);
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-2xl bg-[#0a0a0a]/95 border-white/10 backdrop-blur-xl">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-3 text-2xl">
-            <span className="font-bold text-white">{item.market.replace("KRW-", "")}</span>
-            <span className="text-sm font-normal text-gray-400 bg-white/5 px-2 py-1 rounded">
-              {item.english_name}
-            </span>
+          <DialogTitle className="flex flex-col gap-2">
+            <div className="flex items-center gap-3 text-2xl">
+              <span className="font-bold text-white">{item.market.replace("KRW-", "")}</span>
+              <span className="text-sm font-normal text-gray-400 bg-white/5 px-2 py-1 rounded">
+                {item.english_name}
+              </span>
+            </div>
+            
+            <div className="flex gap-2 mt-1">
+              {volumeRank && (
+                <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider bg-neon-blue/10 text-neon-blue px-2 py-1 rounded border border-neon-blue/20">
+                  <Trophy className="w-3 h-3" />
+                  #{volumeRank} Traded Most
+                </div>
+              )}
+              {changeRankInfo && (
+                <div className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded border ${
+                  changeRankInfo.type === 'gainer' 
+                    ? 'bg-neon-green/10 text-neon-green border-neon-green/20' 
+                    : 'bg-neon-red/10 text-neon-red border-neon-red/20'
+                }`}>
+                  {changeRankInfo.type === 'gainer' ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                  #{changeRankInfo.rank} {changeRankInfo.type === 'gainer' ? 'Gainer' : 'Loser'}
+                </div>
+              )}
+            </div>
           </DialogTitle>
         </DialogHeader>
 

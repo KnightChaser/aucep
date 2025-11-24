@@ -217,6 +217,7 @@ export const Dashboard = ({
           isOpen={isDetailsOpen}
           onClose={() => setIsDetailsOpen(false)}
           item={selectedTicker}
+          allTickerData={data}
         />
       </div>
     </div>
