@@ -20,9 +20,15 @@ interface MarketDetailsDialogProps {
 export const MarketDetailsDialog = ({
   isOpen,
   onClose,
-  item,
+  item: initialItem,
   allTickerData,
 }: MarketDetailsDialogProps) => {
+  // Find the latest data for the selected item from the live allTickerData
+  const item = useMemo(() => {
+    if (!initialItem) return null;
+    return allTickerData.find((t) => t.market === initialItem.market) || initialItem;
+  }, [allTickerData, initialItem]);
+
   if (!item) return null;
 
   const isRise = item.change === "RISE";
